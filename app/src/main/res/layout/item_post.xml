@@ -20,7 +20,7 @@
             android:id="@+id/three_dots"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="650dp"
+            android:layout_marginLeft="350dp"
             android:layout_marginTop="10dp"
             app:srcCompat="@drawable/threedots" />
 

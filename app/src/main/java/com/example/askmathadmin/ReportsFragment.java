@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,24 +82,18 @@ public class ReportsFragment extends Fragment {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // Handle failure
                     }
                 });
     }
 
     private void showPostOptionsMenu(View view, int position) {
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-        popupMenu.inflate(R.menu.post_options_menu);
+        popupMenu.inflate(R.menu.post_options_menu_one);
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int itemId = item.getItemId();
-                if (itemId == R.id.action_edit) {
-                    // Handle edit action
-                    // You can add your edit functionality here
-                    return true;
-                } else if (itemId == R.id.action_delete) {
-                    // Handle delete action
+                if (itemId == R.id.action_delete) {
                     deleteReportedPost(position);
                     return true;
                 }
@@ -108,27 +103,51 @@ public class ReportsFragment extends Fragment {
         popupMenu.show();
     }
 
+
     private void deleteReportedPost(int position) {
         ReportedPost post = reportedPosts.get(position);
         String postId = post.getPostId();
 
         if (postId != null) {
-            db.collection("reports").document(postId).delete()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+            WriteBatch batch = db.batch();
+
+            batch.delete(db.collection("posts").document(postId));
+
+            db.collection("reports")
+                    .whereEqualTo("postId", postId)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            reportedPosts.remove(position);
-                            adapter.notifyItemRemoved(position);
+                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                batch.delete(documentSnapshot.getReference());
+                            }
+
+                            batch.commit()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            reportedPosts.remove(position);
+                                            adapter.notifyItemRemoved(position);
+                                            Toast.makeText(requireContext(), "Post and related reports deleted successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(requireContext(), "Failed to delete post and reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(requireContext(), "Failed to delete report: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Failed to fetch related reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
-            Toast.makeText(requireContext(), "Report ID is null, unable to delete report", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Post ID is null, unable to delete post and reports", Toast.LENGTH_SHORT).show();
         }
     }
 }
