@@ -22,7 +22,6 @@ public class AnswersFragment extends Fragment {
     private Button saveButton;
     private FirebaseFirestore db;
 
-    // Define the collection path name as a constant
     private static final String COLLECTION_PATH = "user_answers";
 
     @Override
@@ -54,8 +53,8 @@ public class AnswersFragment extends Fragment {
         db.collection(COLLECTION_PATH).add(data)
                 .addOnSuccessListener(documentReference -> {
                     String documentId = documentReference.getId();
-                    data.put("documentId", documentId); // Add the document ID as a field
-                    updateDocumentWithId(documentReference, data); // Update the document with the document ID field
+                    data.put("documentId", documentId);
+                    updateDocumentWithId(documentReference, data);
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Error saving text: " + e.getMessage(), Toast.LENGTH_SHORT).show();
