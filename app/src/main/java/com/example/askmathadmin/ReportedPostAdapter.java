@@ -62,7 +62,7 @@ public class ReportedPostAdapter extends RecyclerView.Adapter<ReportedPostAdapte
             titleTextView = itemView.findViewById(R.id.titleTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionTextView);
             reportReasonTextView = itemView.findViewById(R.id.reportReasonTextView);
-            threeDots = itemView.findViewById(R.id.three_dots); // Initialize threedots ImageView
+            threeDots = itemView.findViewById(R.id.three_dots);
         }
     }
 

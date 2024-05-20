@@ -53,7 +53,6 @@ public class EditPostActivity extends AppCompatActivity {
         if (postId != null && !newTitle.isEmpty() && !newDescription.isEmpty()) {
             firestore.collection("posts").document(postId).update("title", newTitle, "description", newDescription)
                     .addOnSuccessListener(aVoid -> {
-                        // Set result as successful and finish the activity
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("postId", postId);
                         resultIntent.putExtra("title", newTitle);

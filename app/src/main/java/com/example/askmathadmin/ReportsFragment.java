@@ -129,7 +129,7 @@ public class ReportsFragment extends Fragment {
                                         public void onSuccess(Void aVoid) {
                                             reportedPosts.remove(position);
                                             adapter.notifyItemRemoved(position);
-                                            Toast.makeText(requireContext(), "Post and related reports deleted successfully", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(requireContext(), "Post and reports deleted successfully", Toast.LENGTH_SHORT).show();
                                         }
                                     })
                                     .addOnFailureListener(new OnFailureListener() {
@@ -143,11 +143,11 @@ public class ReportsFragment extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(requireContext(), "Failed to fetch related reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Fail" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {
-            Toast.makeText(requireContext(), "Post ID is null, unable to delete post and reports", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Post ID is null", Toast.LENGTH_SHORT).show();
         }
     }
 }

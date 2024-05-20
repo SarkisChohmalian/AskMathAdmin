@@ -1,5 +1,6 @@
 package com.example.askmathadmin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,14 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        View exitButton = view.findViewById(R.id.exit);
+        View logOutButton = view.findViewById(R.id.log_out);
 
-        exitButton.setOnClickListener(new View.OnClickListener() {
+        logOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                throw new NullPointerException("Forced crash by clicking exit button");
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 
